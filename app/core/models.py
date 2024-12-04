@@ -233,7 +233,7 @@ class Term(TimeStampedModel):
 
     def mapped_to(self, target_root):
         """Return path if Term is mapped to anything in target_root string"""
-        target_map = self.mapping.filter(iri__startswith=target_root)
+        target_map = self.mapping.filter(iri__istartswith=target_root)
         if target_map.exists():
             return target_map.first().path()
         return None
