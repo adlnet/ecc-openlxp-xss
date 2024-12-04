@@ -108,5 +108,5 @@ class TermAdmin(admin.ModelAdmin):
         form = super(TermAdmin, self).get_form(request, obj, **kwargs)
         if obj is not None:
             form.base_fields['mapping'].queryset = Term.objects.exclude(
-                iri__startswith=obj.root_term_set())
+                iri__istartswith=obj.root_term_set())
         return form
