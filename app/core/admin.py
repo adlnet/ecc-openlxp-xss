@@ -5,6 +5,7 @@ from deconfliction_service.node_utils import get_terms_with_multiple_definitions
 from core.models import (ChildTermSet, SchemaLedger, Term, TermSet,
                          TransformationLedger)
 from django import forms
+from django.db import models
 from django.urls import path, reverse
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse, HttpRequest
 import xml.etree.ElementTree as ET
@@ -12,14 +13,13 @@ import xml.etree.ElementTree as ET
 from core.exceptions import MissingColumnsError, MissingRowsError, TermCreationError
 from core.models import (ChildTermSet, SchemaLedger, Term, TermSet, TransformationLedger)
 from django_neomodel import admin as neomodel_admin
-from core.models import NeoAlias, NeoContext, NeoDefinition, NeoTerm, NeoContextDescription
+from core.models import NeoAlias, NeoContext, NeoDefinition, NeoTerm
 from core.utils import run_node_creation
 from deconfliction_service.views import run_deconfliction
-from django import forms
 from uuid import uuid4
 import logging
 
-from .views import export_terms_as_json, export_terms_as_xml, export_terms_as_csv
+from .views import export_terms_as_json, export_terms_as_xml, export_terms_as_csv, search
 
 import pandas as pd
 
@@ -316,3 +316,22 @@ class NeoDefinitionAdmin(admin.ModelAdmin):
     readonly_fields = ('definition',)
 
 neomodel_admin.register(NeoDefinition, NeoDefinitionAdmin)
+
+
+class Search(models.Model):
+    class Meta:
+        verbose_name_plural = "Search"
+        managed = False 
+class SearchAdmin(admin.ModelAdmin):
+    
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('', self.admin_site.admin_view(search), name='search_view'),
+        ]
+        return custom_urls + urls
+
+    def has_view_permission(self, request, obj=None):
+        return True
+
+admin.site.register(Search, SearchAdmin)

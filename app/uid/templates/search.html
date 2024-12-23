@@ -65,6 +65,8 @@
     <div class="container">
         <h1>Search CCV/LCV Definitions</h1>
 
+        <a href="{% url 'admin:index'%}" class="button">Back</a>
+
         <form method="POST">
             {% csrf_token %}
             <div class="form-group">

@@ -118,7 +118,6 @@ def find_colliding_definition_nodes():
     """
 
     results, _ = db.cypher_query(cypher_query)
-    logger.info(f"Colliding definition nodes: {results}")
     return results
 
 def evaluate_deconfliction_status(similarity_results):

@@ -667,5 +667,3 @@ class NeoDefinition(DjangoNode):
         except Exception as e:
             logger.error(f"Unexpected error while connecting relationships for definition '{self.definition}': {e}")
             raise e
-    
-

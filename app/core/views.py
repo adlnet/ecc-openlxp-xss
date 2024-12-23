@@ -1,11 +1,13 @@
 from django.http import JsonResponse
 from .models import NeoTerm
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
 from django.contrib import messages
 import xml.etree.ElementTree as ET
 from neomodel import db
 import csv
 from io import StringIO
+from .forms import SearchForm
 
 import logging
 
@@ -202,3 +204,91 @@ def convert_to_xml(data):
         return {'error': None, 'xml_data': xml_data}
     except Exception as e:
         return {'error': str(e)}
+    
+
+SEARCH_BY_ALIAS = """
+WITH toLower($search_term) as search_term
+MATCH (a:NeoAlias)
+WHERE toLower(a.alias) CONTAINS search_term
+MATCH (a)-[:POINTS_TO]->(term:NeoTerm)
+OPTIONAL MATCH (term)-[:POINTS_TO]->(def:NeoDefinition)
+OPTIONAL MATCH (ctx:NeoContext)-[:IS_A]->(term)
+RETURN term.uid as LCVID, a.alias as Alias, def.definition as Definition, ctx.context as Context
+"""
+
+SEARCH_BY_DEFINITION = """
+WITH toLower($search_term) as search_term
+MATCH (def:NeoDefinition)
+WHERE toLower(def.definition) CONTAINS search_term
+MATCH (term:NeoTerm)-[:POINTS_TO]->(def)
+OPTIONAL MATCH (a:NeoAlias)-[:POINTS_TO]->(term)
+OPTIONAL MATCH (ctx:NeoContext)-[:IS_A]->(term)
+RETURN term.uid as LCVID, a.alias as Alias, def.definition as Definition, ctx.context as Context
+"""
+
+SEARCH_BY_CONTEXT = """
+WITH toLower($search_term) as search_term
+MATCH (ctx:NeoContext)
+WHERE toLower(ctx.context) CONTAINS search_term
+MATCH (ctx)-[:IS_A]->(term:NeoTerm)
+OPTIONAL MATCH (term)-[:POINTS_TO]->(def:NeoDefinition)
+OPTIONAL MATCH (a:NeoAlias)-[:POINTS_TO]->(term)
+RETURN term.uid as LCVID, a.alias as Alias, def.definition as Definition, ctx.context as Context
+"""
+
+
+def execute_neo4j_query(query, params):
+    query_str = query
+    try:
+        logger.info(f"Executing query: {query} with params: {params}")
+        results, meta = db.cypher_query(query_str, params)
+        logger.info(results)
+        return results
+    except Exception as e:
+        logger.error(f"Error executing Neo4j query: {e}")
+        return None
+
+# Django view for search functionality
+def search(request):
+    results = []
+    if request.method == 'POST':
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            search_term = form.cleaned_data['search_term']
+            search_type = form.cleaned_data['search_type']
+
+            # Log form data for debugging
+            logger.info(f"Search form data: search_term={search_term}, search_type={search_type}")
+
+            # Determine which query to use based on search type
+            if search_type == 'alias':
+                query = SEARCH_BY_ALIAS
+            elif search_type == 'definition':
+                query = SEARCH_BY_DEFINITION
+            elif search_type == 'context':
+                query = SEARCH_BY_CONTEXT
+
+            # Log the query and params being sent to Neo4j
+            logger.info(f"Executing query: {query} with params: {{'search_term': {search_term}}}")
+
+            # Execute the query
+            results_data = execute_neo4j_query(query, {"search_term": search_term})
+
+            if results_data:
+                logger.info(f"Raw results data: {results_data}")
+                results = {"data":[
+                    {
+                        "LCVID": record[0],  # Assuming record[0] is 'LCVID'
+                        "Alias": record[1],  # Assuming record[1] is 'Alias'
+                        "Definition": record[2],  # Assuming record[2] is 'Definition'
+                        "Context": record[3]  # Assuming record[3] is 'Context'
+                    }
+                    for record in results_data  # Iterating over each record in results_data
+                ]}
+            else:
+                logger.info("No results found.")
+                results = {'error': 'No results found or error querying Neo4j.'}
+
+    else:
+        form = SearchForm()
+    return render(request, 'search.html', {'form': form, 'results': results})
