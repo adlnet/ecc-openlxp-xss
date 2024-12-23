@@ -1,26 +1,51 @@
 version: "3"
-
+ 
 services:
   db-xss:
     image: mysql:5.7
+    container_name: db
     ports:
       - '3310:3306'
     environment:
       MYSQL_DATABASE: "${DB_NAME}"
-#      MYSQL_USER: 'root'
+      MYSQL_USER: "${DB_USER}"   
       MYSQL_PASSWORD: "${DB_PASSWORD}"
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
       # MYSQL_HOST: ''
     networks:
       - openlxp
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$DB_ROOT_PASSWORD']
+      interval: 2s
+      timeout: 2s
+      retries: 20
+      start_period: 3s
+    
+  neo4j:
+    image: neo4j:5.15.0
+    ports:
+      - '7687:7687'
+      - '7474:7474'
+    environment:
+      NEO4J_AUTH: neo4j/password
+    networks:
+      - openlxp
+    healthcheck:
+      test: wget http://localhost:7474 || exit 1
+      interval: 2s
+      timeout: 2s
+      retries: 20
+      start_period: 3s
+
   app:
-    container_name: openlxp-xss
+    container_name: app
     build:
       context: .
+    restart: always
     ports:
       - "8010:8020"
     command: >
-      sh -c ". /opt/app/start-app.sh"
+      sh -c "python manage.py makemigrations && python manage.py migrate && . /opt/app/start-app.sh"
     environment:
       DB_NAME: "${DB_NAME}"
       DB_USER: "${DB_USER}"
@@ -36,15 +61,25 @@ services:
       # BAD_HOST: "${BAD_HOST}"
       # OVERIDE_HOST: "${OVERIDE_HOST}"
       # STRATEGY: "${STRATEGY}"
+      SENTENCE_TRANSFORMERS_HOME: "${SENTENCE_TRANSFORMERS_HOME}"
+      HF_HOME: "${HF_HOME}"
+      TRANSFORMERS_CACHE: "${TRANSFORMERS_CACHE}"
+      HF_DATASETS_CACHE: "${HF_DATASETS_CACHE}"
     volumes:
       - ./app:/opt/app/openlxp-xss
+      - huggingface_data:/opt/app/huggingface
     depends_on:
-      - db-xss
+      db-xss:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
     networks:
       - openlxp
+
 volumes:
-  data01:
+  huggingface_data:
     driver: local
+
 networks:
   openlxp:
-    external: true
+    driver: bridge

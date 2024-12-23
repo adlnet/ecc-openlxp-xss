@@ -1,0 +1,25 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>NeoTerm List</h1>
+<a href="{% url 'core:neo_term_create' %}" class="button">Create New NeoTerm</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>UID</th>
+            <th>LCVID</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for term in terms %}
+        <tr>
+            <td>{{ term.uid }}</td>
+            <td>{{ term.lcvid }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">No NeoTerms found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

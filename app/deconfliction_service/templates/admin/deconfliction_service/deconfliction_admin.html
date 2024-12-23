@@ -1,0 +1,141 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .definition-block {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+    }
+    
+    .conjunction-highlight {
+        background-color: #ffeb3b;
+        padding: 1px 2px;
+        border-radius: 2px;
+    }
+    
+    .warning-text {
+        color: #856404;
+        background-color: #fff3cd;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+    }
+    .button-container {
+        margin-top: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Deconfliction Service</h1>
+<h2>Collisions</h2>
+{% if collisions %}
+<ul>
+    {% for collision in collisions %}
+    <li>
+        <strong>Definition 1:</strong> {{ collision.definition_1 }}
+        <br>
+        <strong>Definition 2:</strong> {{ collision.definition_2 }}
+        <br>
+        <a href="{% url 'admin:admin_resolve_collision' collision.definition_1 collision.definition_2 %}"
+           class="button">Resolve Collision</a>
+    </li>
+    <br>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No collisions found.</p>
+{% endif %}
+
+<h2>Duplicate Definitions</h2>
+{% if duplicates %}
+<ul>
+    {% for duplicate in duplicates %}
+    <li>
+        <strong>Definition Text:</strong> {{ duplicate.definition_text }}
+        <br>
+        <strong>Occurrences:</strong> {{ duplicate.definition_ids|length }}
+        <br>
+        <strong>Associated Terms:</strong>
+        <ul>
+            {% for definition_id, terms in duplicate.terms_by_definition.items %}
+                <li>
+                    Definition ID: {{ definition_id }}
+                    <ul>
+                        {% for term in terms %}
+                            <li>{{ term.text }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% if not forloop.first %}
+                        <a href="{% url 'admin:admin_merge_definitions' duplicate.definition_ids.0 definition_id %}"
+                           class="button"
+                           onclick="return confirm('Are you sure you want to merge this definition with the first one? This will redirect all terms to the first definition and delete this one.')">
+                            Merge with first definition
+                        </a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </li>
+    <br>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No duplicate definitions found.</p>
+{% endif %}
+
+<h2>Deviations</h2> {% if deviations %} 
+    <ul> 
+        {% for deviation in deviations %} 
+        <li>
+            <strong>{{ deviation.term_uid }}</strong> has <strong>{{deviation.count}}</strong> deviations</li> 
+        {% endfor %} 
+    </ul> 
+    {% else %} 
+        <p>No deviations found.</p> 
+    {% endif %}
+
+    <h2>Non-Atomic Definitions</h2>
+    {% if non_atomic_definitions %}
+        <div class="warning-text">
+            The following definitions contain coordinating conjunctions (and, or, but, etc.) 
+            and might benefit from being split into more atomic definitions.
+        </div>
+        
+        {% for def in non_atomic_definitions %}
+        <div class="definition-block">
+            <strong>Associated Term UID:</strong> {{def.term.uid}}
+            <br>
+            <strong>Definition Text:</strong>
+            {% with text=def.definition %}
+                {% for word in text.split %}
+                    {% if word.lower in def.conjunctions %}
+                        <span class="conjunction-highlight">{{ word }}</span>
+                    {% else %}
+                        {{ word }}
+                    {% endif %}
+                {% endfor %}
+            {% endwith %}
+            <br>
+            {% if def.term.uid%}
+                <div class="button-container">
+                    <a href="{% url 'admin:deprecate_term_and_definition' def.term.uid %}" 
+                    class="button" 
+                    onclick="return confirm('Are you sure you want to deprecate this definition? This action cannot be undone.')">Deprecate Definition</a>
+                </div>
+            {% else %}
+            <div class="button-container">
+                <a class="button disabled">No Term to Deprecate</a>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% endfor %}
+    {% else %}
+        <p>No non-atomic definitions found.</p>
+    {% endif %}
+{% endblock %}

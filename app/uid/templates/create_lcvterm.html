@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create LCV Term</title>
+</head>
+<body>
+    <h1>Create LCV Term</h1>
+    <form method="post" action="{% url 'uid:create_lcvterm' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

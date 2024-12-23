@@ -18,10 +18,13 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from django.shortcuts import redirect
 
 urlpatterns = [
+    path('', lambda request: redirect('admin/', permanent=True)),
     url('', include('openlxp_authentication.urls')),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('api/auth/', include('users.urls')),
+    path('uid/', include('uid.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

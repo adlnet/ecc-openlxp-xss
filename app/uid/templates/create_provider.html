@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Provider</title>
+</head>
+<body>
+    <h1>Create Provider</h1>
+    <form method="post" action="{% url 'uid:create_provider' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

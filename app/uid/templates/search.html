@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        input[type="text"], select, button {
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .results-list {
+            margin-top: 30px;
+        }
+        .result-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .error-message {
+            color: red;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Search CCV/LCV Definitions</h1>
+
+        <a href="{% url 'admin:index'%}" class="button">Back</a>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="search_term">Search Term:</label>
+                <input type="text" name="search_term" id="search_term" placeholder="Enter search term" required>
+            </div>
+
+            <div class="form-group">
+                <label for="search_type">Search By:</label>
+                <select name="search_type" id="search_type">
+                    <option value="alias">Alias</option>
+                    <option value="definition">Definition</option>
+                    <option value="context">Context</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <button type="submit">Search</button>
+            </div>
+        </form>
+
+        <!-- Display search results -->
+        {% if results.data %}
+            <div class="results-list">
+                <h3>Search Results</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>UID</th>
+                            <th>Alias</th>
+                            <th>Definition</th>
+                            <th>Context</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in results.data %}
+                            <tr>
+                                <td class="result-item">{{ record.LCVID }}</td>  <!-- UID -->
+                                <td class="result-item">{{ record.Alias }}</td>  <!-- Alias -->
+                                <td class="result-item">{{ record.Definition }}</td>  <!-- Definition -->
+                                <td class="result-item">{{ record.Context|default:"No context" }}</td>  <!-- Context (with default fallback) -->
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        {% if results.error %}
+            <p class="error-message">{{ results.error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

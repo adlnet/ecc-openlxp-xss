@@ -14,4 +14,6 @@ urlpatterns = [
          name='transformationledger'),
     path('json-ld/<path:pk>', views.JSONLDDataView.as_view(),
          name='json-ld'),
+    path('import-csv/', views.ImportCSVView.as_view(), name='import-csv'),
+    path('export-terms/', views.ExportTermsView.as_view(), name='export-terms'),
 ]

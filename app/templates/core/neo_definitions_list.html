@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neo Definitions</title>
+</head>
+<body>
+    <h1>Neo Definitions</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Definition</th>
+                <th>Embedding</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for definition in definitions %}
+                <tr>
+                    <td>{{ definition.definition }}</td>
+                    <td>{{ definition.embedding|join:", " }}</td>  <!-- Adjust based on how you want to display the embedding -->
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2">No definitions found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

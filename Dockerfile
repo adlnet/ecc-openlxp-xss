@@ -12,6 +12,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 RUN mkdir -p /opt/app
 RUN mkdir -p /opt/app/pip_cache
 RUN mkdir -p /opt/app/openlxp-xss
+RUN mkdir -p /opt/app/huggingface
 COPY requirements.txt start-server.sh start-app.sh /opt/app/
 RUN chmod +x /opt/app/start-server.sh
 RUN chmod +x /opt/app/start-app.sh

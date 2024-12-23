@@ -1,0 +1,40 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .button-container {
+    display: flex;
+
+    margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<form method="post">
+    {% csrf_token %}
+    
+    <div>
+        <h2>Definition 1</h2>
+        <h3>{{ definition_1.definition }}</h3>
+    </div>
+
+    <div>
+        <h2>Definition 2</h2>
+        <h3>{{ definition_2.definition }}</h3>
+        <p>Not a collision? Upgrade this definition to a unique term.</p>
+        <a href="{% url 'admin:admin_upgrade_definition' definition_2.definition %}" class="button">Upgrade to Unique Term</a>
+    </div>
+
+    <div class="button-container">
+
+    <a href="{% url 'admin:admin_deconfliction_view' %}" class="button">Back</a>
+
+    </div>
+</form>
+
+
+{%endblock%}

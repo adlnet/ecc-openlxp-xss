@@ -15,6 +15,9 @@ import os
 import sys
 from pathlib import Path
 
+from neomodel import config
+config.DATABASE_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:password@neo4j:7687')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -35,6 +38,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    "django_neomodel",
     "admin_interface",
     "colorfield",
     'django.contrib.admin',
@@ -50,7 +54,9 @@ INSTALLED_APPS = [
     'api',
     'users',
     'social_django',
+    'uid',
     'openlxp_authentication',
+    'deconfliction_service',
 ]
 
 MIDDLEWARE = [
@@ -68,7 +74,7 @@ ROOT_URLCONF = 'openlxp_xss_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

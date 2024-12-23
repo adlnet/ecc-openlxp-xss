@@ -118,7 +118,9 @@ celerybeat.pid
 
 # Environments
 .env
+ldss-3.7
 .venv
+ldss-3.7
 env/
 venv/
 ENV/
