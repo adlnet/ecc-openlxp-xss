@@ -330,17 +330,22 @@ class ModelTests(TestSetUp):
         t_description = "test description"
         t_data_type = "string"
         t_use = Term.USE_CHOICES[0][0]
+        t_type = Term.TYPE_CHOICES[0][0]
+        t_multiple_expected = False
         t_source = "source"
         t_ts = self.ts
         t_status = "published"
 
         expected_iri = "xss:" + t_ts.version + "@" + t_ts.name + "?" + t_name
         expected_export = {'use': t_use, 'data_type': t_data_type,
-                           'source': t_source, 'description': t_description}
+                           'source': t_source, 'description': t_description,
+                           'type': t_type,
+                           'multiple_expected': t_multiple_expected}
 
         term = Term(name=t_name, description=t_description,
                     data_type=t_data_type, use=t_use,
-                    source=t_source, term_set=t_ts, status=t_status)
+                    source=t_source, term_set=t_ts, status=t_status,
+                    type=t_type, multiple_expected=t_multiple_expected)
 
         term.save()
 
