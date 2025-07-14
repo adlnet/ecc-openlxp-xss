@@ -127,7 +127,6 @@ class ModelTests(TestSetUp):
         """Test that creating a SchemaLedger with a valid file passes"""
 
         schema_name = 'test_name'
-        schema_iri = 'test_iri'
         status = 'published'
         version = '1.0.1'
         major_version = 1
@@ -139,7 +138,7 @@ class ModelTests(TestSetUp):
         metadata = {'test': 'test'}
 
         schema = SchemaLedger(schema_name=schema_name,
-                              schema_iri=schema_iri,
+                              schema_iri=schema_name,
                               status=status,
                               major_version=major_version,
                               minor_version=minor_version,

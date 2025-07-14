@@ -160,8 +160,9 @@ class Term(TimeStampedModel):
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     data_type = models.CharField(max_length=255, null=True, blank=True)
     use = models.CharField(max_length=255, choices=USE_CHOICES)
-    type = models.CharField(max_length=255, choices=TYPE_CHOICES)
-    multiple_expected = models.BooleanField(default=False,
+    learning_type = models.CharField(max_length=255, choices=TYPE_CHOICES,
+                                     default=None)
+    multiple_expected = models.BooleanField(default=True,
                                             help_text="Whether multiple"
                                             " values "
                                             "are expected for this Term")
@@ -193,7 +194,7 @@ class Term(TimeStampedModel):
         """convert key attributes of the Term to a dict"""
         attrs = {}
         attrs['use'] = self.use
-        attrs['type'] = self.type
+        attrs['learning_type'] = self.learning_type
         attrs['multiple_expected'] = self.multiple_expected
         if self.data_type is not None and self.data_type != '':
             attrs['data_type'] = self.data_type
