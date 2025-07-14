@@ -161,7 +161,7 @@ class Term(TimeStampedModel):
     data_type = models.CharField(max_length=255, null=True, blank=True)
     use = models.CharField(max_length=255, choices=USE_CHOICES)
     learning_type = models.CharField(max_length=255, choices=TYPE_CHOICES,
-                                     default=None)
+                                     default=None, null=True, blank=True)
     multiple_expected = models.BooleanField(default=True,
                                             help_text="Whether multiple"
                                             " values "
