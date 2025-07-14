@@ -337,14 +337,16 @@ class ModelTests(TestSetUp):
 
         expected_iri = "xss:" + t_ts.version + "@" + t_ts.name + "?" + t_name
         expected_export = {'use': t_use, 'data_type': t_data_type,
-                           'source': t_source, 'description': t_description,
+                           'source': t_source,
+                           'description': t_description,
                            'learning_type': t_type,
                            'multiple_expected': t_multiple_expected}
 
         term = Term(name=t_name, description=t_description,
                     data_type=t_data_type, use=t_use,
                     source=t_source, term_set=t_ts, status=t_status,
-                    learning_type=t_type, multiple_expected=t_multiple_expected)
+                    learning_type=t_type,
+                    multiple_expected=t_multiple_expected)
 
         term.save()
 
