@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'api',
     'users',
-    'social_django',
     'openlxp_authentication',
 ]
 

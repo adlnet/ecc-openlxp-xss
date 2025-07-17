@@ -18,8 +18,9 @@ services:
     
   app:
     # container_name: openlxp-xss
-    build:
-      context: .
+    image: xss-1.0.6-ibtest
+    # build:
+    #   context: .
     ports:
       - "8010:8020"
     command: >
