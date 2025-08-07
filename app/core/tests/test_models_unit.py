@@ -67,7 +67,7 @@ class ModelTests(TestSetUp):
                               patch_version=patch_version,
                               schema_file=file)
 
-        with patch('core.models.logger') as log,\
+        with patch('core.models.logger') as log, \
                 patch('core.models.clamd') as clam:
             clam.instream.return_value = {'stream': ('BAD', 'EICAR')}
             clam.ClamdUnixSocket.return_value = clam
@@ -104,10 +104,10 @@ class ModelTests(TestSetUp):
                               patch_version=patch_version,
                               schema_file=file)
 
-        with patch('core.models.logger') as log,\
-                patch('core.models.clamd') as clam,\
-                patch('builtins.open', mock_open()),\
-                patch('core.models.magic') as magic,\
+        with patch('core.models.logger') as log, \
+                patch('core.models.clamd') as clam, \
+                patch('builtins.open', mock_open()), \
+                patch('core.models.magic') as magic, \
                 patch('core.models.os'):
             magic.from_file.return_value = 'text/plain'
             clam.instream.return_value = {'stream': ('OK', 'OKAY')}
@@ -145,10 +145,10 @@ class ModelTests(TestSetUp):
                               patch_version=patch_version,
                               schema_file=file)
 
-        with patch('core.models.logger') as log,\
-                patch('core.models.clamd') as clam,\
-                patch('builtins.open', mock_open()),\
-                patch('core.models.magic') as magic,\
+        with patch('core.models.logger') as log, \
+                patch('core.models.clamd') as clam, \
+                patch('builtins.open', mock_open()), \
+                patch('core.models.magic') as magic, \
                 patch('core.models.os'):
             magic.from_file.return_value = 'application/json'
             clam.instream.return_value = {'stream': ('OK', 'OKAY')}
@@ -203,7 +203,7 @@ class ModelTests(TestSetUp):
                                  schema_mapping_file=file,
                                  status=status)
 
-        with patch('core.models.logger') as log,\
+        with patch('core.models.logger') as log, \
                 patch('core.models.clamd') as clam:
             clam.instream.return_value = {'stream': ('BAD', 'EICAR')}
             clam.ClamdUnixSocket.return_value = clam
@@ -234,10 +234,10 @@ class ModelTests(TestSetUp):
                                  schema_mapping_file=file,
                                  status=status)
 
-        with patch('core.models.logger') as log,\
-                patch('core.models.clamd') as clam,\
-                patch('builtins.open', mock_open()),\
-                patch('core.models.magic') as magic,\
+        with patch('core.models.logger') as log, \
+                patch('core.models.clamd') as clam, \
+                patch('builtins.open', mock_open()), \
+                patch('core.models.magic') as magic, \
                 patch('core.models.os'):
             magic.from_file.return_value = 'text/plain'
             clam.instream.return_value = {'stream': ('OK', 'OKAY')}
@@ -271,10 +271,10 @@ class ModelTests(TestSetUp):
                                  schema_mapping_file=file,
                                  status=status)
 
-        with patch('core.models.logger') as log,\
-                patch('core.models.clamd') as clam,\
-                patch('builtins.open', mock_open()),\
-                patch('core.models.magic') as magic,\
+        with patch('core.models.logger') as log, \
+                patch('core.models.clamd') as clam, \
+                patch('builtins.open', mock_open()), \
+                patch('core.models.magic') as magic, \
                 patch('core.models.os'):
             magic.from_file.return_value = 'application/json'
             clam.instream.return_value = {'stream': ('OK', 'OKAY')}
@@ -329,7 +329,6 @@ class ModelTests(TestSetUp):
         t_description = "test description"
         t_data_type = "string"
         t_use = Term.USE_CHOICES[0][0]
-        t_type = Term.TYPE_CHOICES[0][0]
         t_multiple_expected = False
         t_source = "source"
         t_ts = self.ts
