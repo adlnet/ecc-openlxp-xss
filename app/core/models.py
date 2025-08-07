@@ -149,10 +149,6 @@ class Term(TimeStampedModel):
                    ('Optional', 'Optional'),
                    ('Recommended', 'Recommended'),
                    ]
-    TYPE_CHOICES = [('Learning Resource', 'Learning Resource'),
-                    ('Learning Event', 'Learning Event'),
-                    ('Both', 'Both'),
-                    ]
     name = models.SlugField(max_length=255, allow_unicode=True)
     description = models.TextField(null=True, blank=True)
     iri = models.SlugField(max_length=255, unique=True,
@@ -160,8 +156,6 @@ class Term(TimeStampedModel):
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     data_type = models.CharField(max_length=255, null=True, blank=True)
     use = models.CharField(max_length=255, choices=USE_CHOICES)
-    learning_type = models.CharField(max_length=255, choices=TYPE_CHOICES,
-                                     default=None, null=True, blank=True)
     multiple_expected = models.BooleanField(default=True,
                                             help_text="Whether multiple"
                                             " values "
@@ -194,7 +188,6 @@ class Term(TimeStampedModel):
         """convert key attributes of the Term to a dict"""
         attrs = {}
         attrs['use'] = self.use
-        attrs['learning_type'] = self.learning_type
         attrs['multiple_expected'] = self.multiple_expected
         if self.data_type is not None and self.data_type != '':
             attrs['data_type'] = self.data_type
