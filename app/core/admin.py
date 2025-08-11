@@ -90,7 +90,9 @@ class TermAdmin(admin.ModelAdmin):
                     'modified', )
     fieldsets = (
         (None, {'fields': ('iri', 'name', 'uuid', 'description', 'status',)}),
-        ('Info', {'fields': ('data_type', 'use', 'source',)}),
+        ('Info', {'fields': ('data_type', 'use',
+                             'multiple_expected',
+                             'source',)}),
         ('Connections', {'fields': ('term_set', 'mapping',)}),
         ('Updated', {'fields': ('updated_by',), })
     )

@@ -1,6 +1,6 @@
 # Dockerfile
 
-FROM python:3.9-buster
+FROM python:3.9-bookworm
 
 # install nginx
 RUN apt-get update && apt-get install nginx vim libxml2-dev libxmlsec1-dev clamav-daemon clamav-freshclam clamav-unofficial-sigs -y --no-install-recommends
