@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'core.apps.CoreConfig',
     'api',
-    'health_check', 
+    'health_check',
     'users',
     'social_django',
     'openlxp_authentication',
@@ -79,11 +79,9 @@ MIDDLEWARE = [
     'csp.middleware.CSPMiddleware',
 ]
 
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_HTTPONLY = True
 
-CORS_ALLOWED_ORIGINS = [os.environ.get('CORS_ALLOWED_ORIGINS')]
-CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOWED_ORIGINS = [os.environ.get('CORS_ALLOWED_ORIGINS')]
+# CORS_ALLOW_CREDENTIALS = True
 
 SESSION_COOKIE_SECURE = True
 SECURE_BROWSER_XSS_FILTER = True
@@ -213,10 +211,14 @@ REST_FRAMEWORK = {
     ],
 }
 
-CSRF_COOKIE_DOMAIN = '.deloitteopenlxp.com'
-CSRF_TRUSTED_ORIGINS = ['https://dev-ldss.deloitteopenlxp.com', ]
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = True
+if os.environ.get('CSRF_TRUSTED_ORIGINS'):
+    CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS').split(';')
+else:
+    CSRF_TRUSTED_ORIGINS = ['http://localhost:8010']
 
-SECURE_SSL_REDIRECT = False
+# SECURE_SSL_REDIRECT = True
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
