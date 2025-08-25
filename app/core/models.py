@@ -303,7 +303,8 @@ class SchemaLedger(TimeStampedModel):
 
         if self.schema_file:
             # scan file for malicious payloads
-            cd = clamd.ClamdNetworkSocket(host="clamd.clamav", port=3310, timeout=10)
+            cd = clamd.ClamdNetworkSocket(host="clamd.clamav", port=3310,
+                                          timeout=10)
             json_file = self.schema_file
             scan_results = cd.instream(json_file)['stream']
             if 'OK' not in scan_results:
@@ -400,13 +401,15 @@ class TransformationLedger(TimeStampedModel):
         if self.schema_mapping_file:
             json_file = self.schema_mapping_file
             # scan file for malicious payloads
-            cd = clamd.ClamdNetworkSocket(host="clamd.clamav", port=3310, timeout=10)
+            cd = clamd.ClamdNetworkSocket(host="clamd.clamav",
+                                          port=3310, timeout=10)
             scan_results = cd.instream(json_file)['stream']
             if 'OK' not in scan_results:
                 for issue_type, issue in [scan_results, ]:
                     logger.error(
                         '%s %s in transform %s to %s',
-                        issue_type, issue, self.source_schema.iri, self.target_schema.iri  # noqa: E501
+                        issue_type, issue, self.source_schema.iri,
+                        self.target_schema.iri  # noqa: E501
                     )
             # only load json if no issues found
             else:

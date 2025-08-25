@@ -71,6 +71,7 @@ class ModelTests(TestSetUp):
                 patch('core.models.clamd') as clam:
             clam.instream.return_value = {'stream': ('BAD', 'EICAR')}
             clam.ClamdUnixSocket.return_value = clam
+            clam.ClamdNetworkSocket.return_value = clam
 
             self.assertEqual(schema.version, '')
             self.assertEqual(schema.schema_file.size, len(EICAR))
@@ -112,6 +113,7 @@ class ModelTests(TestSetUp):
             magic.from_file.return_value = 'text/plain'
             clam.instream.return_value = {'stream': ('OK', 'OKAY')}
             clam.ClamdUnixSocket.return_value = clam
+            clam.ClamdNetworkSocket.return_value = clam
 
             self.assertEqual(schema.version, '')
             self.assertEqual(schema.schema_file.size, len(file_contents))
@@ -153,6 +155,7 @@ class ModelTests(TestSetUp):
             magic.from_file.return_value = 'application/json'
             clam.instream.return_value = {'stream': ('OK', 'OKAY')}
             clam.ClamdUnixSocket.return_value = clam
+            clam.ClamdNetworkSocket.return_value = clam
 
             self.assertEqual(schema.version, '')
             self.assertEqual(schema.schema_file.size, len(file_contents))
@@ -207,6 +210,7 @@ class ModelTests(TestSetUp):
                 patch('core.models.clamd') as clam:
             clam.instream.return_value = {'stream': ('BAD', 'EICAR')}
             clam.ClamdUnixSocket.return_value = clam
+            clam.ClamdNetworkSocket.return_value = clam
 
             self.assertEqual(mapping.schema_mapping_file.size, len(EICAR))
             mapping.clean()
@@ -242,6 +246,7 @@ class ModelTests(TestSetUp):
             magic.from_file.return_value = 'text/plain'
             clam.instream.return_value = {'stream': ('OK', 'OKAY')}
             clam.ClamdUnixSocket.return_value = clam
+            clam.ClamdNetworkSocket.return_value = clam
 
             self.assertEqual(mapping.schema_mapping_file.size,
                              len(file_contents))
@@ -279,6 +284,7 @@ class ModelTests(TestSetUp):
             magic.from_file.return_value = 'application/json'
             clam.instream.return_value = {'stream': ('OK', 'OKAY')}
             clam.ClamdUnixSocket.return_value = clam
+            clam.ClamdNetworkSocket.return_value = clam
 
             self.assertEqual(mapping.schema_mapping_file.size,
                              len(file_contents))
