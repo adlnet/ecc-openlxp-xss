@@ -43,6 +43,7 @@ git clone https://github.com/OpenLXP/openlxp-xss.git
 | AWS_ACCESS_KEY_ID         | The Access Key ID for AWS  |
 | AWS_SECRET_ACCESS_KEY     | The Secret Access Key for AWS  |
 | AWS_DEFAULT_REGION        | The region for AWS |
+| CORS_ALLOWED_ORIGINS      | List of trusted origins that are allowed to make cross-origin requests to the server |
 | DB_HOST                   | The host name, IP, or docker container name of the database |
 | DB_NAME                   | The name to give the database |
 | DB_PASSWORD               | The password for the user to access the database |

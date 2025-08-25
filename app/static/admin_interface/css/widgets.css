@@ -40,6 +40,19 @@
 }
 /* end-fix */
 
+/* fix user reset password form */
+.admin-interface #user_form #id_password p bdi::after {
+    content: "";
+    display: block;
+}
+
+.admin-interface #user_form #id_password a.button {
+    display: inline-block;
+    padding: 6px 12px;
+    text-decoration: none !important;
+}
+/* end-fix */
+
 /* fixed time widget header border radius */
 .admin-interface .clockbox.module h2 {
     border-bottom-left-radius: 0;
@@ -53,15 +66,25 @@
     display: flex;
     flex-wrap: nowrap;
     white-space: nowrap;
+    max-width: 1000px;
     height: fit-content;
+    gap: 0;
 }
 /* end fix */
 
 /* fix related widget links icons size and vertical alignment */
 .admin-interface .related-widget-wrapper .related-widget-wrapper-link {
     display: flex;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 4px;
+    width: 28px;
+    height: 32px;
+}
+.admin-interface .related-widget-wrapper .related-widget-wrapper-link:first-of-type {
+    margin-left: 8px;
+}
+.admin-interface .related-widget-wrapper .related-widget-wrapper-link:hover {
+    filter: brightness(80%);
 }
 .admin-interface .related-widget-wrapper .related-widget-wrapper-link img {
     width: 16px;
@@ -77,10 +100,19 @@
 }
 /* end fix */
 
+/* fix selector chooser slide transition */
+.admin-interface .related-widget-wrapper .selector-chooser .selector-add,
+.admin-interface .related-widget-wrapper .selector-chooser .selector-remove {
+    transition: none;
+}
+/* end fix */
+
 /* fix related widget links margin from select2 (autocomplete_fields) */
+/*
 .admin-interface .related-widget-wrapper .select2-container + .related-widget-wrapper-link {
     margin-left: 12px !important;
 }
+*/
 /* end fix */
 
 /* improve responsive selector */

@@ -34,6 +34,10 @@ regex_check = (r'(?!(\A( \x09\x0A\x0D\x20-\x7E # ASCII '
                r'| \xF1-\xF3{3} # planes 4-15 '
                r'| \xF4\x80-\x8F{2} # plane 16 )*\Z))')
 
+source_tag = 'ldss:'
+graph_tag = '@graph'
+context_tag = '@context'
+
 
 def validate_version(value):
     check = re.fullmatch('[0-9]*[.][0-9]*[.][0-9]*', value)
@@ -79,33 +83,33 @@ class TermSet(TimeStampedModel):
         graph = {}
         context = {}
         # add elements to graph and context
-        graph['@id'] = 'ldss:' + self.iri
+        graph['@id'] = source_tag + self.iri
         graph['@type'] = 'rdfs:Class'
         graph['rdfs:label'] = self.name
         context['rdfs'] = 'http://www.w3.org/2000/01/rdf-schema#'
         if hasattr(self, 'childtermset'):
             graph['schema:domainIncludes'] = {
-                '@id': 'ldss:' +
+                '@id': source_tag +
                 self.childtermset.parent_term_set.iri}
             context['schema'] = 'https://schema.org/'
         # iterate over child term sets and collect their graphs and contexts
         children = []
         for kid in self.children.filter(status='published'):
             kid_ld = kid.json_ld()
-            children.extend(kid_ld['@graph'])
+            children.extend(kid_ld[graph_tag])
             # add children's context to current context, but current has
             # higher priority
-            context = {**kid_ld['@context'], **context}
+            context = {**kid_ld[context_tag], **context}
         # iterate over terms and collect their graphs and contexts
         terms = []
         for term in self.terms.filter(status='published'):
             term_ld = term.json_ld()
-            terms.extend(term_ld['@graph'])
+            terms.extend(term_ld[graph_tag])
             # add terms' context to current context, but current has higher
             # priority
-            context = {**term_ld['@context'], **context}
+            context = {**term_ld[context_tag], **context}
         # return the graph and context
-        return {'@context': context, '@graph': [graph, *children, *terms]}
+        return {context_tag: context, graph_tag: [graph, *children, *terms]}
 
     def mapped_to(self, target_root):
         """Return dict of Terms mapped to anything in target_root string"""
@@ -149,6 +153,10 @@ class Term(TimeStampedModel):
                    ('Optional', 'Optional'),
                    ('Recommended', 'Recommended'),
                    ]
+    TYPE_CHOICES = [('Learning Resource', 'Learning Resource'),
+                    ('Learning Event', 'Learning Event'),
+                    ('Both', 'Both'),
+                    ]
     name = models.SlugField(max_length=255, allow_unicode=True)
     description = models.TextField(null=True, blank=True)
     iri = models.SlugField(max_length=255, unique=True,
@@ -156,6 +164,7 @@ class Term(TimeStampedModel):
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     data_type = models.CharField(max_length=255, null=True, blank=True)
     use = models.CharField(max_length=255, choices=USE_CHOICES)
+    # multiple_expected fields added in migration 0008
     multiple_expected = models.BooleanField(default=True,
                                             help_text="Whether multiple"
                                             " values "
@@ -203,7 +212,7 @@ class Term(TimeStampedModel):
         graph = {}
         context = {}
         # add elements to graph and context
-        graph['@id'] = 'ldss:' + self.iri
+        graph['@id'] = source_tag + self.iri
         graph['@type'] = 'rdf:Property'
         if self.description is not None and len(self.description.strip()) > 0:
             graph['rdfs:comment'] = self.description
@@ -213,7 +222,7 @@ class Term(TimeStampedModel):
                 '@id': data_type_matching[self.data_type]}
         if self.mapping.exists():
             graph['owl:equivalentProperty'] = [
-                {'@id': 'ldss:' + alt.iri} for alt in self.mapping.all()]
+                {'@id': source_tag + alt.iri} for alt in self.mapping.all()]
             context['owl'] = 'http://www.w3.org/2002/07/owl#'
         graph['rdfs:label'] = self.name
         graph['schema:domainIncludes'] = {'@id': 'ldss:' + self.term_set.iri}
@@ -221,7 +230,7 @@ class Term(TimeStampedModel):
         context['rdfs'] = 'http://www.w3.org/2000/01/rdf-schema#'
         context['rdf'] = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
         # return the graph and context
-        return {'@context': context, '@graph': [graph, ]}
+        return {context_tag: context, graph_tag: [graph, ]}
 
     def path(self):
         """Get the path of the Term"""
@@ -294,7 +303,8 @@ class SchemaLedger(TimeStampedModel):
 
         if self.schema_file:
             # scan file for malicious payloads
-            cd = clamd.ClamdUnixSocket()
+            cd = clamd.ClamdNetworkSocket(host="clamd.clamav", port=3310,
+                                          timeout=10)
             json_file = self.schema_file
             scan_results = cd.instream(json_file)['stream']
             if 'OK' not in scan_results:
@@ -391,13 +401,15 @@ class TransformationLedger(TimeStampedModel):
         if self.schema_mapping_file:
             json_file = self.schema_mapping_file
             # scan file for malicious payloads
-            cd = clamd.ClamdUnixSocket()
+            cd = clamd.ClamdNetworkSocket(host="clamd.clamav",
+                                          port=3310, timeout=10)
             scan_results = cd.instream(json_file)['stream']
             if 'OK' not in scan_results:
                 for issue_type, issue in [scan_results, ]:
                     logger.error(
                         '%s %s in transform %s to %s',
-                        issue_type, issue, self.source_schema.iri, self.target_schema.iri  # noqa: E501
+                        issue_type, issue, self.source_schema.iri,
+                        self.target_schema.iri  # noqa: E501
                     )
             # only load json if no issues found
             else:

@@ -2,7 +2,7 @@ version: "3"
 
 services:
   db-xss:
-    image: mysql:5.7
+    image: mysql:8.0.36
     ports:
       - '3310:3306'
     environment:
@@ -22,20 +22,19 @@ services:
     command: >
       sh -c ". /opt/app/start-app.sh"
     environment:
-      DB_NAME: "${DB_NAME}"
-      DB_USER: "${DB_USER}"
-      DB_PASSWORD: "${DB_PASSWORD}"
+      CORS_ALLOWED_ORIGINS: "${CORS_ALLOWED_ORIGINS}"
       DB_HOST: "${DB_HOST}"
-      DJANGO_SUPERUSER_USERNAME: "${DJANGO_SUPERUSER_USERNAME}"
-      DJANGO_SUPERUSER_PASSWORD: "${DJANGO_SUPERUSER_PASSWORD}"
+      DB_NAME: "${DB_NAME}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_USER: "${DB_USER}"
       DJANGO_SUPERUSER_EMAIL: "${DJANGO_SUPERUSER_EMAIL}"
-      SECRET_KEY_VAL: "${SECRET_KEY_VAL}"
+      DJANGO_SUPERUSER_PASSWORD: "${DJANGO_SUPERUSER_PASSWORD}"
+      DJANGO_SUPERUSER_USERNAME: "${DJANGO_SUPERUSER_USERNAME}"
       ENTITY_ID: "${ENTITY_ID}"
-      SP_PUBLIC_CERT: "${SP_PUBLIC_CERT}"
+      HOSTS: "${HOSTS}"
+      SECRET_KEY_VAL: "${SECRET_KEY_VAL}"
       SP_PRIVATE_KEY: "${SP_PRIVATE_KEY}"
-      # BAD_HOST: "${BAD_HOST}"
-      # OVERIDE_HOST: "${OVERIDE_HOST}"
-      # STRATEGY: "${STRATEGY}"
+      SP_PUBLIC_CERT: "${SP_PUBLIC_CERT}"
     volumes:
       - ./app:/opt/app/openlxp-xss
     depends_on:

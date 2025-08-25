@@ -26,11 +26,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY_VAL')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 mimetypes.add_type("text/css", ".css", True)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('HOSTS').split(';')
+
+# Content Security Policy (CSP)
+SELF_VALUE = "'self'"  # defining a constant
+IMG_DATA_VALUE = "data:"
+
+CSP_DEFAULT_SRC = (SELF_VALUE)
+CSP_SCRIPT_SRC = (SELF_VALUE,)
+CSP_IMG_SRC = (SELF_VALUE, IMG_DATA_VALUE)
+CSP_STYLE_SRC = (SELF_VALUE)
+CSP_FRAME_SRC = (SELF_VALUE,)
+CSP_FONT_SRC = (SELF_VALUE,)
+
 
 # Application definition
 
@@ -49,7 +61,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'core.apps.CoreConfig',
     'api',
-    'health_check', 
+    'health_check',
     'users',
     'social_django',
     'openlxp_authentication',
@@ -64,7 +76,18 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.admindocs.middleware.XViewMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
+
+
+# CORS_ALLOWED_ORIGINS = [os.environ.get('CORS_ALLOWED_ORIGINS')]
+# CORS_ALLOW_CREDENTIALS = True
+
+SESSION_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
 
 ROOT_URLCONF = 'openlxp_xss_project.urls'
 
@@ -188,10 +211,14 @@ REST_FRAMEWORK = {
     ],
 }
 
-CSRF_COOKIE_DOMAIN = '.deloitteopenlxp.com'
-CSRF_TRUSTED_ORIGINS = ['https://dev-ldss.deloitteopenlxp.com', ]
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = True
+if os.environ.get('CSRF_TRUSTED_ORIGINS'):
+    CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS').split(';')
+else:
+    CSRF_TRUSTED_ORIGINS = ['http://localhost:8010']
 
-SECURE_SSL_REDIRECT = False
+# SECURE_SSL_REDIRECT = True
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
