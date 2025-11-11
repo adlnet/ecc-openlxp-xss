@@ -16,12 +16,13 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, re_path
+from django.urls import path
+from django.urls.conf import include
 
 urlpatterns = [
-    re_path('admin/doc/', include('django.contrib.admindocs.urls')),
+    path('admin/doc/', include('django.contrib.admindocs.urls')),
     # url('', include('openlxp_authentication.urls')),
-    re_path('admin/', admin.site.urls),
-    re_path('api/', include('api.urls')),
-    re_path('api/auth/', include('users.urls')),
+    path('admin/', admin.site.urls),
+    path('api/', include('api.urls')),
+    path('api/auth/', include('users.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
