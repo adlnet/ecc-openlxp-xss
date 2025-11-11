@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # start-server.sh
 
-python manage.py waitdb 
-python manage.py migrate 
-python manage.py loaddata admin_theme_data.json 
+python3 manage.py waitdb 
+python3 manage.py migrate 
+python3 manage.py loaddata admin_theme_data.json 
 cd /opt/app/ 
 if [ -n "$TMP_SCHEMA_DIR" ] ; then
     (cd openlxp-xss; install -d -o www-data -p $TMP_SCHEMA_DIR)
