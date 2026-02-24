@@ -31,7 +31,7 @@ Or copy it into one of these folders to install it system-wide:
 ## 1. Clone the project
 Clone the Github repository
 ```
-git clone https://github.com/OpenLXP/openlxp-xss.git
+git clone https://github.com/adlnet/ecc-openlxp-xss.git
 ```  
 
 ## 2. Set up your environment variables
