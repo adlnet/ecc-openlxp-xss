@@ -14,14 +14,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, re_path
 
 urlpatterns = [
-    url('', include('openlxp_authentication.urls')),
-    path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
-    path('api/auth/', include('users.urls')),
+    re_path('admin/doc/', include('django.contrib.admindocs.urls')),
+    # url('', include('openlxp_authentication.urls')),
+    re_path('admin/', admin.site.urls),
+    re_path('api/', include('api.urls')),
+    re_path('api/auth/', include('users.urls')),
+    re_path('health/', include('health_check.urls'),
+            name='health_check')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

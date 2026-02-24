@@ -6,6 +6,7 @@
         --primary-fg: #fff;
         --body-fg: #333;
         --body-bg: #fff;
+        --body-medium-color: #444;
         --body-quiet-color: #666;
         --body-loud-color: #000;
         --header-color: #ffc;
@@ -180,8 +181,10 @@
 
 .admin-interface .module h2,
 .admin-interface .module caption,
+.admin-interface .module.collapse details summary,
 .admin-interface .module.filtered h2 {
     background: var(--admin-interface-module-background-color);
+    border-color: var(--admin-interface-module-background-color);
     color: var(--admin-interface-module-text-color);
 }
 
@@ -239,6 +242,11 @@
     color: var(--admin-interface-module-text-color);
 }
 
+.admin-interface .selector .selector-chosen .selector-chosen-title {
+    background: var(--admin-interface-module-background-color);
+    color: var(--admin-interface-module-text-color);
+}
+
 .admin-interface .selector .selector-available h2,
 .admin-interface .selector .selector-chosen h2 {
     border-bottom-left-radius: 0px;
@@ -251,6 +259,21 @@
 .admin-interface .selector a.selector-clearall:hover {
     color: var(--admin-interface-generic-link-hover-color);
 }
+
+/* fix #393  */
+.admin-interface .selector-chosen .list-footer-display {
+    background: var(--admin-interface-module-background-color);
+}
+.admin-interface .selector-chosen .list-footer-display {
+    color: var(--admin-interface-module-text-color);
+}
+.admin-interface .selector-chosen .list-footer-display__clear {
+    color: var(--admin-interface-module-link-color);
+}
+.admin-interface .selector-chosen .list-footer-display__clear:hover {
+    color: var(--admin-interface-module-link-hover-color);
+}
+/* endfix */
 
 .admin-interface a:link,
 .admin-interface a:visited {
@@ -395,14 +418,19 @@
     border-radius: var(--admin-interface-module-border-radius);
 }
 
+.admin-interface .module.filtered .changelist-filter-clear-container {
+    margin: 12px 0;
+}
+
 .admin-interface .module.filtered #changelist-filter h3#changelist-filter-clear {
-    margin-bottom: 0;
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 
 .admin-interface .module.filtered #changelist-filter .changelist-filter-clear a {
-    font-size: 13px;
+    font-size: 12px;
     margin: .3em 0;
-    padding: 0 15px;
+    padding: 0 15px 0 32px;
 }
 
 .admin-interface .module.filtered #changelist-filter .changelist-filter-clear a:focus,
@@ -423,7 +451,8 @@
     text-decoration: none;
 }
 
-.admin-interface.list-filter-highlight .module.filtered #changelist-filter h3.active {
+.admin-interface.list-filter-highlight .module.filtered #changelist-filter h3.active,
+.admin-interface.list-filter-highlight .module.filtered #changelist-filter summary.active {
     font-weight: bold;
 }
 
@@ -455,11 +484,25 @@
     color: var(--admin-interface-generic-link-hover-color);
 }
 
+.admin-interface .module.filtered #changelist-filter a,
+.admin-interface .module.filtered #changelist-filter a:link,
+.admin-interface .module.filtered #changelist-filter a:visited {
+    color: var(--admin-interface-generic-link-color);
+    text-decoration: none;
+}
+
+.admin-interface .module.filtered #changelist-filter a:hover,
+.admin-interface .module.filtered #changelist-filter a:active {
+    color: var(--admin-interface-generic-link-hover-color);
+    text-decoration: none;
+}
+
 /* begin fix issue #11 - Inline border bottom should not be rounded */
 .admin-interface .module h2,
 .admin-interface.dashboard .module caption,
 .admin-interface #nav-sidebar .module th,
 .admin-interface #nav-sidebar .module caption,
+.admin-interface .module.collapse details summary,
 .admin-interface .module.filtered h2 {
     border-radius: var(--admin-interface-module-border-radius);
 }

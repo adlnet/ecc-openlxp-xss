@@ -2,7 +2,7 @@
 
 The Experience Schema Service (XSS) maintains referential representations of domain entities, as well as transformational mappings that describe how to convert an entity from one particular schema representation to another.
 
-This component responsible for managing pertinent object/record metadata schemas, and the mappings for transforming records from a source metadata schema to a target metadata schema. This component will also be used to store and link vocabularies from stored schema.
+This component is responsible for managing pertinent object/record metadata schemas, and the mappings for transforming records from a source metadata schema to a target metadata schema. This component will also be used to store and link vocabularies from stored schema.
 
 
 ## Prerequisites
@@ -31,28 +31,31 @@ Or copy it into one of these folders to install it system-wide:
 ## 1. Clone the project
 Clone the Github repository
 ```
-git clone https://github.com/OpenLXP/openlxp-xss.git
+git clone https://github.com/adlnet/ecc-openlxp-xss.git
 ```  
 
 ## 2. Set up your environment variables
 - Create a `.env` file in the root directory
 - The following environment variables are required:
 
-| Environment Variable      | Description |
-| ------------------------- | ----------- |
-| AWS_ACCESS_KEY_ID         | The Access Key ID for AWS  |
-| AWS_SECRET_ACCESS_KEY     | The Secret Access Key for AWS  |
-| AWS_DEFAULT_REGION        | The region for AWS |
-| DB_HOST                   | The host name, IP, or docker container name of the database |
-| DB_NAME                   | The name to give the database |
-| DB_PASSWORD               | The password for the user to access the database |
-| DB_ROOT_PASSWORD          | The password for the root user to access the database, should be the same as `DB_PASSWORD` if using the root user |
+| Environment Variable      | Description                                                                                                                 |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| CORS_ALLOWED_ORIGINS      | List of trusted origins that are allowed to make cross-origin requests to the server                                        |
+| CSRF_TRUSTED_ORIGINS      | A trusted origin for unsafe requests                                                                                        |
+| DB_HOST                   | The host name, IP, or docker container name of the database                                                                 |
+| DB_NAME                   | The name to give the database                                                                                               |
+| DB_PASSWORD               | The password for the user to access the database                                                                            |
+| DB_ROOT_PASSWORD          | The password for the root user to access the database, should be the same as `DB_PASSWORD` if using the root user           |
 | DB_USER                   | The name of the user to use when connecting to the database. When testing use root to allow the creation of a test database |
-| DJANGO_SUPERUSER_EMAIL    | The email of the superuser that will be created in the application |
-| DJANGO_SUPERUSER_PASSWORD | The password of the superuser that will be created in the application |
-| DJANGO_SUPERUSER_USERNAME | The username of the superuser that will be created in the application |
-| LOG_PATH                  | The path to the log file to use |
-| SECRET_KEY_VAL            | The Secret Key for Django |
+| DJANGO_SUPERUSER_EMAIL    | The email of the superuser that will be created in the application                                                          |
+| DJANGO_SUPERUSER_PASSWORD | The password of the superuser that will be created in the application                                                       |
+| DJANGO_SUPERUSER_USERNAME | The username of the superuser that will be created in the application                                                       |
+| ENTITY_ID                 | The Entity ID used to identify this application to Identity Providers when using Single Sign On                             |
+| HOSTS                     | A list of host names, separated by semicolons, that the application should accept requests for                              |
+| LOG_PATH                  | The path to the log file to use                                                                                             |
+| SECRET_KEY_VAL            | The Secret Key for Django                                                                                                   |
+| SP_PRIVATE_KEY            | The Private Key to use when this application communicates with Identity Providers to use Single Sign On                     |
+| SP_PUBLIC_CERT            | The Public Key to use when this application communicates with Identity Providers to use Single Sign On                      |
 
 ## 3. Deployment
 1. Create the OpenLXP docker network. Open a terminal and run the following command in the root directory of the project
@@ -133,21 +136,38 @@ git clone https://github.com/OpenLXP/openlxp-xss.git
 
                 - `Name` Term title
 
-                - `Desciption` Term entity's description
+                - `Description` Term entity's description
 
                 - `Status` Select if the Term set is Published or Retired
 
                 - `Data Type` Term entity's corresponding data type
 
                 - `Use` Term entity's corresponding use case
+                
+                - `Multiple Expected` Whether the Term should be a singular value or a list
 
                 - `Source` Term entity's corresponding source
 
-                - `term set` Select the reference to the parent term set from the drop down
+                - `Term Set` Select the reference to the parent term set from the drop down
 
                 - `Mapping` Add mappings between terms entity's of different parent term set
 
                 - `Updated by` User that creates/updates the term
+
+3. <u>[OPENLXP AUTHENTICATION](https://pypi.org/project/openlxp-authentication/)</u>
+    - Saml configurations: Configure Security Assertion Markup Language (SAML)
+        1. Click on `Saml configurations` > `Add Saml configuration`
+            - Enter configurations below:
+
+                - `Name`: The name that will be used to identify the IdP in the URL.
+
+                - `Entity id`: The unique name provided by the IdP.
+
+                - `Url`: The connection URL to connect to the IdP at.
+
+                - `Cert`: The public cert used to connect to the IdP.
+
+                - `Attribute mapping`: The JSON formatted mapping to convert attributes provided by the IdP, to a User in this system.
 
 ## 5. Removing Deployment
 To destroy the created resources, simply run the command below in your terminal:
@@ -164,7 +184,7 @@ Query string parameter: `name` `version` `iri`
     
 
     
-**Note:This API fetches the required schema from the repository using the Name and Version or IRI parameters**
+*Note:This API fetches the required schema from the repository using the Name and Version or IRI parameters*
 
 Query string parameter: `sourceName` `sourceVersion` `sourceIRI` `targetName` `targetVersion` `targetIRI`
 
@@ -183,7 +203,19 @@ Test coverage information will be stored in an htmlcov directory
 docker-compose --env-file .env run app sh -c "coverage run manage.py test && coverage html && flake8"
 ```
 
+## Authentication
+
+While XSS supports authentication and authorization, the schema and mapping APIs do not require authentication to use, as it is believed that they should be easily accessible shared resources.
+
+The Django settings `SP_PUBLIC_CERT`, `SP_PRIVATE_KEY` , and `SP_ENTITY_ID` must be defined (if using docker-compose the variables can be passed through).
+
+Information on the settings for the authentication module can be found on the [OpenLXP-Authentication repo](https://github.com/adlnet/openlxp-authentication).
+
+## Additional Info
+
+Additional information about ECC can be found in our [ECC wiki](https://github.com/adlnet/ecc-openlxp-xds-ui/wiki)
+
 ## License
 
- This project uses the [MIT](http://www.apache.org/licenses/LICENSE-2.0) license.
+ This project uses the [Apache](http://www.apache.org/licenses/LICENSE-2.0) license.
   

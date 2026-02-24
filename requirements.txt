@@ -1,39 +1,45 @@
 bleach~=6.0.0
 
-mysql-connector-python >= 8.0.28, <=8.0.29
-
 clamd==1.0.2
-
-django-mysql>=3.10.0,<3.11.0
-
-Django>=3.2,<4.0
-
-djangorestframework>=3.12.2,<3.13.0
-
-flake8>=3.9.0,<4.0.1
-
-gunicorn>=20.0.4,<20.1.0
 
 coverage>=5.5,<6.0
 
-django-cors-headers>=3.7.0,<3.8.0
-
 ddt>=1.4.2,<1.5.0
-
-django-model-utils>=4.1.1,<4.2.0
-
-isort>=5.11.0, <5.12.0
-
-openlxp-authentication >=1.1.0, <1.2
-
-python-magic >=0.4.27, <0.5
-
-requests>=2.25.1,<2.26.0
 
 django-admin-interface>=0.28.3
 
 django-colorfield>=0.11.0
 
+django-cors-headers>=3.7.0,<3.8.0
+
+django-csp>=3.7,<3.8
+
+django-health-check>3.18.0, <3.19.0
+
+django-model-utils>=4.1.1,<4.2.0
+
+django-mysql>=4.4.0,<5.0.0
+
+Django>=4.2.23,<5.0
+
+djangorestframework>=3.15.2,<3.16.0
+
+docutils>=0.20.1
+
+flake8>=3.9.0,<4.0.1
+
+gunicorn>=23.0.0, <23.1.0
+
+isort>=5.11.0, <5.12.0
+
+mysql-connector-python >= 9.1.0, <9.2.0
+
+openlxp-authentication >=1.1.2, <1.2
+
+python-magic >=0.4.27, <0.5
+
 python-slugify>=8.0.1
+
+requests~=2.32.4
 
 text-unidecode>=1.3

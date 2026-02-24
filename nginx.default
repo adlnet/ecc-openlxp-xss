@@ -11,6 +11,10 @@ server {
         root /opt/app/openlxp-xss;
     }
 
+    location /media {
+        root /opt/app/openlxp-xss;
+    }
+
     location / {
         proxy_pass http://127.0.0.1:8010;
         proxy_set_header Host $host;

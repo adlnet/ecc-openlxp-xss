@@ -67,10 +67,11 @@ class ModelTests(TestSetUp):
                               patch_version=patch_version,
                               schema_file=file)
 
-        with patch('core.models.logger') as log,\
+        with patch('core.models.logger') as log, \
                 patch('core.models.clamd') as clam:
             clam.instream.return_value = {'stream': ('BAD', 'EICAR')}
             clam.ClamdUnixSocket.return_value = clam
+            clam.ClamdNetworkSocket.return_value = clam
 
             self.assertEqual(schema.version, '')
             self.assertEqual(schema.schema_file.size, len(EICAR))
@@ -104,14 +105,15 @@ class ModelTests(TestSetUp):
                               patch_version=patch_version,
                               schema_file=file)
 
-        with patch('core.models.logger') as log,\
-                patch('core.models.clamd') as clam,\
-                patch('builtins.open', mock_open()),\
-                patch('core.models.magic') as magic,\
+        with patch('core.models.logger') as log, \
+                patch('core.models.clamd') as clam, \
+                patch('builtins.open', mock_open()), \
+                patch('core.models.magic') as magic, \
                 patch('core.models.os'):
             magic.from_file.return_value = 'text/plain'
             clam.instream.return_value = {'stream': ('OK', 'OKAY')}
             clam.ClamdUnixSocket.return_value = clam
+            clam.ClamdNetworkSocket.return_value = clam
 
             self.assertEqual(schema.version, '')
             self.assertEqual(schema.schema_file.size, len(file_contents))
@@ -127,7 +129,6 @@ class ModelTests(TestSetUp):
         """Test that creating a SchemaLedger with a valid file passes"""
 
         schema_name = 'test_name'
-        schema_iri = 'test_iri'
         status = 'published'
         version = '1.0.1'
         major_version = 1
@@ -139,21 +140,22 @@ class ModelTests(TestSetUp):
         metadata = {'test': 'test'}
 
         schema = SchemaLedger(schema_name=schema_name,
-                              schema_iri=schema_iri,
+                              schema_iri=schema_name,
                               status=status,
                               major_version=major_version,
                               minor_version=minor_version,
                               patch_version=patch_version,
                               schema_file=file)
 
-        with patch('core.models.logger') as log,\
-                patch('core.models.clamd') as clam,\
-                patch('builtins.open', mock_open()),\
-                patch('core.models.magic') as magic,\
+        with patch('core.models.logger') as log, \
+                patch('core.models.clamd') as clam, \
+                patch('builtins.open', mock_open()), \
+                patch('core.models.magic') as magic, \
                 patch('core.models.os'):
             magic.from_file.return_value = 'application/json'
             clam.instream.return_value = {'stream': ('OK', 'OKAY')}
             clam.ClamdUnixSocket.return_value = clam
+            clam.ClamdNetworkSocket.return_value = clam
 
             self.assertEqual(schema.version, '')
             self.assertEqual(schema.schema_file.size, len(file_contents))
@@ -204,10 +206,11 @@ class ModelTests(TestSetUp):
                                  schema_mapping_file=file,
                                  status=status)
 
-        with patch('core.models.logger') as log,\
+        with patch('core.models.logger') as log, \
                 patch('core.models.clamd') as clam:
             clam.instream.return_value = {'stream': ('BAD', 'EICAR')}
             clam.ClamdUnixSocket.return_value = clam
+            clam.ClamdNetworkSocket.return_value = clam
 
             self.assertEqual(mapping.schema_mapping_file.size, len(EICAR))
             mapping.clean()
@@ -235,14 +238,15 @@ class ModelTests(TestSetUp):
                                  schema_mapping_file=file,
                                  status=status)
 
-        with patch('core.models.logger') as log,\
-                patch('core.models.clamd') as clam,\
-                patch('builtins.open', mock_open()),\
-                patch('core.models.magic') as magic,\
+        with patch('core.models.logger') as log, \
+                patch('core.models.clamd') as clam, \
+                patch('builtins.open', mock_open()), \
+                patch('core.models.magic') as magic, \
                 patch('core.models.os'):
             magic.from_file.return_value = 'text/plain'
             clam.instream.return_value = {'stream': ('OK', 'OKAY')}
             clam.ClamdUnixSocket.return_value = clam
+            clam.ClamdNetworkSocket.return_value = clam
 
             self.assertEqual(mapping.schema_mapping_file.size,
                              len(file_contents))
@@ -272,14 +276,15 @@ class ModelTests(TestSetUp):
                                  schema_mapping_file=file,
                                  status=status)
 
-        with patch('core.models.logger') as log,\
-                patch('core.models.clamd') as clam,\
-                patch('builtins.open', mock_open()),\
-                patch('core.models.magic') as magic,\
+        with patch('core.models.logger') as log, \
+                patch('core.models.clamd') as clam, \
+                patch('builtins.open', mock_open()), \
+                patch('core.models.magic') as magic, \
                 patch('core.models.os'):
             magic.from_file.return_value = 'application/json'
             clam.instream.return_value = {'stream': ('OK', 'OKAY')}
             clam.ClamdUnixSocket.return_value = clam
+            clam.ClamdNetworkSocket.return_value = clam
 
             self.assertEqual(mapping.schema_mapping_file.size,
                              len(file_contents))
@@ -330,17 +335,21 @@ class ModelTests(TestSetUp):
         t_description = "test description"
         t_data_type = "string"
         t_use = Term.USE_CHOICES[0][0]
+        t_multiple_expected = False
         t_source = "source"
         t_ts = self.ts
         t_status = "published"
 
         expected_iri = "xss:" + t_ts.version + "@" + t_ts.name + "?" + t_name
         expected_export = {'use': t_use, 'data_type': t_data_type,
-                           'source': t_source, 'description': t_description}
+                           'source': t_source,
+                           'description': t_description,
+                           'multiple_expected': t_multiple_expected}
 
         term = Term(name=t_name, description=t_description,
                     data_type=t_data_type, use=t_use,
-                    source=t_source, term_set=t_ts, status=t_status)
+                    source=t_source, term_set=t_ts, status=t_status,
+                    multiple_expected=t_multiple_expected)
 
         term.save()
 
