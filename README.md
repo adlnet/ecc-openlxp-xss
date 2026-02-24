@@ -211,6 +211,10 @@ The Django settings `SP_PUBLIC_CERT`, `SP_PRIVATE_KEY` , and `SP_ENTITY_ID` must
 
 Information on the settings for the authentication module can be found on the [OpenLXP-Authentication repo](https://github.com/adlnet/openlxp-authentication).
 
+## Additional Info
+
+Additional information about ECC can be found in our [ECC wiki](https://github.com/adlnet/ecc-openlxp-xds-ui/wiki)
+
 ## License
 
  This project uses the [Apache](http://www.apache.org/licenses/LICENSE-2.0) license.
